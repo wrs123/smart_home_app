@@ -1,3 +1,4 @@
+import 'package:esp32_ctr/pages/scan_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -38,7 +39,11 @@ class _IndexPageState extends State<IndexPage> {
             color: Color(0xFF303E57),
           ),
         ),
-        actions: [IconButton(onPressed: () =>{}, icon: Icon(CupertinoIcons.add_circled_solid ,size: 30,color: Color(0xFF303E57)))],
+        actions: [IconButton(onPressed: () =>{
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+            return ScanPage();
+          }))
+        }, icon: Icon(CupertinoIcons.add_circled_solid ,size: 30,color: Color(0xFF303E57)))],
       ),
       bottomNavigationBar: SalomonBottomBar(
         margin: const EdgeInsets.all(12),
