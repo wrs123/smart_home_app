@@ -105,9 +105,11 @@ packages:
   flutter_wifi_connect:
     dependency: "direct main"
     description:
-      name: flutter_wifi_connect
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "."
+      ref: Null_safety
+      resolved-ref: f2d487bbb167a3518107e13204a40c3c803e2663
+      url: "https://github.com/wrs123/flutter_wifi_connect.git"
+    source: git
     version: "0.0.7"
   http_parser:
     dependency: transitive
