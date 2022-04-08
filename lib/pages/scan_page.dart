@@ -20,18 +20,23 @@ class ScanPage extends StatelessWidget {
     print(result);
     try{
       res = json.decode(result);
-      if(!(res.containsKey("wifi_ssid") && res.containsKey("wifi_password"))){
+      if(!(res.containsKey("ap_ssid") && res.containsKey("ap_password"))){
         print("违法的二维码");
+        showToastWidget(toastTemplate("违法的二维码"),
+            duration: Duration(milliseconds: 1000),
+            position: ToastPosition(align: Alignment.topCenter, offset: 100)
+        );
         return;
       }
       Map map = {
-        "wifi_ssid": res["wifi_ssid"],
-        "wifi_password": res["wifi_password"]
+        "ap_ssid": res["ap_ssid"],
+        "ap_password": res["ap_password"],
+        "ap_bssid": res["ap_bssid"]
       };
-
-      Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        return WifiSelectPage();
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
+        return WifiSelectPage(ap_map: map,);
       }));
+
     }on FormatException{
       showToastWidget(toastTemplate("错误格式的二维码"),
           duration: Duration(milliseconds: 1000),

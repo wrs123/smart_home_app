@@ -45,6 +45,7 @@ dependencies:
   dio: ^4.0.4
   oktoast: ^3.1.5
   wifi_scan: ^0.2.1
+  flutter_wifi_connect: ^0.0.7
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/light.png
+    - lib/assets/pic/proxy.svg
+    - lib/assets/pic/wifi.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -85,6 +88,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: RemixIcon
+      fonts:
+        - asset: lib/assets/icons/remixicon.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
