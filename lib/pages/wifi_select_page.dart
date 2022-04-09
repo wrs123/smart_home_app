@@ -42,10 +42,10 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
 
 
   void _connect_ap(Map map) async{
-    bool ssid;
+    bool? result;
 
     try {
-      ssid = await FlutterWifiConnect.connectToSecureNetwork(map["ap_ssid"], map["ap_password"]);
+      result = await FlutterWifiConnect.connectToSecureNetwork(map["ap_ssid"], map["ap_password"]);
 
     } on PlatformException {
       print("connect error");
@@ -55,18 +55,18 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
     // bool result = await Tools.connectWifi(ssid: map["ap_ssid"], password: map["ap_password"], bssid: map["ap_bssid"]);
 
 
-    // if(result){
-    //   setState(() {
-    //     ap_connect_status = ApConnectStatus.connected;
-    //   });
-    //   //获取wifi扫描列表
-    //   _getScannedResults();
-    //   return ;
-    // }
-    //
-    // setState(() {
-    //   ap_connect_status = ApConnectStatus.connectFalse;
-    // });
+    if(result??false){ 
+      setState(() {
+        ap_connect_status = ApConnectStatus.connected;
+      });
+      //获取wifi扫描列表
+      _getScannedResults();
+      return ;
+    }
+
+    setState(() {
+      ap_connect_status = ApConnectStatus.connectFalse;
+    });
 
   }
 

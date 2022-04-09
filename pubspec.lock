@@ -107,7 +107,7 @@ packages:
     description:
       path: "."
       ref: Null_safety
-      resolved-ref: f2d487bbb167a3518107e13204a40c3c803e2663
+      resolved-ref: ca8c6f87e1b2c68cb297eac0f0a115c939e5fe0d
       url: "https://github.com/wrs123/flutter_wifi_connect.git"
     source: git
     version: "0.0.7"
