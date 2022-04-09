@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:esp32_ctr/assets/icons/remicicon.dart';
 import 'package:esp32_ctr/utils/httpTools.dart';
 import 'package:esp32_ctr/utils/tools.dart';
@@ -97,13 +98,18 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
   }
 
   void _pico_wifi_set() async{
-    var data = {
+    var formData = FormData.fromMap({
       "wifi_ssid": selectWifi.ssid,
       "wifi_password": password
-    };
-
-    await HttpTools().post("/post", data: data);
-
+    });
+    // var data = {
+    //   "wifi_ssid": selectWifi.ssid,
+    //   "wifi_password": password
+    // };
+    var dio = Dio();
+    Response response = await dio.post('http://192.168.4.1:8091/post', data: formData);
+    // await HttpTools().post("/post", data: data);
+    print(response.data.toString());
   }
 
   /**
