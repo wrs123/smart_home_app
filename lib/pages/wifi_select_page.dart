@@ -1,9 +1,13 @@
 import 'package:esp32_ctr/assets/icons/remicicon.dart';
+import 'package:esp32_ctr/utils/httpTools.dart';
 import 'package:esp32_ctr/utils/tools.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_wifi_connect/flutter_wifi_connect.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
@@ -30,6 +34,7 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
   List<WIfiInfo>? wifiList = [];
   late WIfiInfo selectWifi = new WIfiInfo("0", 0, false);
   ApConnectStatus ap_connect_status = ApConnectStatus.connecting;
+  String password = "WR-';223sgjm4sd445n/....?=_-096.~6---";
 
 
   @override
@@ -43,17 +48,24 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
 
   void _connect_ap(Map map) async{
     bool? result;
+    final info = NetworkInfo();
+    var nowSsid = await info.getWifiName();
+
+    if(nowSsid == map["ap_ssid"]){
+      setState(() {
+        ap_connect_status = ApConnectStatus.connected;
+      });
+      //获取wifi扫描列表
+      _getScannedResults();
+      return ;
+    }
 
     try {
       result = await FlutterWifiConnect.connectToSecureNetwork(map["ap_ssid"], map["ap_password"]);
-
     } on PlatformException {
       print("connect error");
       // ssid = 'Failed to get ssid';
     }
-
-    // bool result = await Tools.connectWifi(ssid: map["ap_ssid"], password: map["ap_password"], bssid: map["ap_bssid"]);
-
 
     if(result??false){ 
       setState(() {
@@ -78,8 +90,111 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
     }
   }
 
+
   void _add_wifi(){
 
+
+  }
+
+  void _pico_wifi_set() async{
+    var data = {
+      "wifi_ssid": selectWifi.ssid,
+      "wifi_password": password
+    };
+
+    await HttpTools().post("/post", data: data);
+
+  }
+
+  /**
+   * 设置wifi密码
+   */
+  _setPassword(){
+    if(selectWifi.ssid != "0"){
+      showBottomSheet();
+    }
+  }
+
+  void showBottomSheet() {
+    //用于在底部打开弹框的效果
+    showModalBottomSheet(
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          //构建弹框中的内容
+          return _password_input_widget(context);
+        },
+        backgroundColor: Colors.transparent,//重要
+        context: context);
+  }
+
+  Widget _password_input_widget(BuildContext context){
+    Widget widget = SingleChildScrollView(
+      child: Container(
+          height: 300,
+          padding:  const EdgeInsets.only(top: 20, left: 10, right: 20),
+          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom ==0 ? 0: MediaQuery.of(context).viewInsets.bottom+50),
+          decoration: const BoxDecoration(
+              color:  Colors.white,
+              borderRadius:BorderRadius.all(Radius.circular(20))
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 50, top: 10),
+                child: Text("配置密码: "+selectWifi.ssid,
+                  style: TextStyle(
+                      fontSize: 20
+                  ),
+                ),
+              ),
+              TextField(
+                autofocus: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderSide: BorderSide(
+                      ///设置边框的颜色
+                      color: Colors.red,
+                      ///设置边框的粗细
+                      width: 1.0,
+                    ),
+                  ),
+                  hintText: "请输入网络密码",
+                  // enabledBorder: UnderlineInputBorder(
+                  //   borderSide: BorderSide(width: 0),
+                  // ),
+                  // focusedBorder: UnderlineInputBorder(
+                  //   borderSide: BorderSide(width: 0),
+                  // ),
+                ),
+              ),
+              GestureDetector(
+                onTap: _pico_wifi_set,
+                child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    margin: EdgeInsets.only(top: 60, bottom: 20),
+                    decoration: BoxDecoration(
+                        color: !selectWifi.isChoose ? Colors.black12 : Color.fromRGBO(45,140,240,1),
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                    child: Center(
+                      child: Text("开始连接",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 18 ,
+                            color: Colors.white
+                        ),
+                      ),
+                    )
+                ),
+              )
+            ],
+          )
+      ),
+    );
+    return widget;
   }
 
   void _getScannedResults() async {
@@ -95,7 +210,11 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
       List<WIfiInfo>? res = [];
       bool samStatus = false;
       for(int i=0;i<list!.length;i++){
-        if(list[i].ssid.isNotEmpty && list[i].frequency < 3000){
+        // if(list[i].ssid == widget.ap_map["ap_ssid"]){
+        //   samStatus = true;
+        //   break;
+        // }
+        if(list[i].ssid.isNotEmpty && list[i].frequency < 3000 && list[i].ssid != widget.ap_map["ap_ssid"]){
           for(int j=0;j<res.length;j++){
             if(list[i].ssid == res[j].ssid){
               samStatus = true;
@@ -103,7 +222,6 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
             }
           }
           if(!samStatus){
-
             res.add(WIfiInfo(list[i].ssid, list[i].level, false));
           }
           samStatus = false;
@@ -172,6 +290,7 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: Text("配置网络",
             style: TextStyle(
@@ -217,22 +336,25 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
                 itemCount: wifiList!.length,
                 ) : const SizedBox(),
               ),
-              Container(
-                width: Tools.getScreenSize(context).width-100,
-                height: 50,
-                margin: EdgeInsets.only(top: 20, bottom: 20),
-                decoration: BoxDecoration(
-                  color: !selectWifi.isChoose ? Colors.black12 : Color.fromRGBO(45,140,240,1),
-                  borderRadius: BorderRadius.circular(15)
-                ),
-                child: Center(
-                  child: Text("下一步",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18 ,
-                      color: !selectWifi.isChoose ? Colors.black : Colors.white
-                    ),
+              GestureDetector(
+                onTap: _setPassword,
+                child: Container(
+                  width: Tools.getScreenSize(context).width-100,
+                  height: 50,
+                  margin: EdgeInsets.only(top: 20, bottom: 20),
+                  decoration: BoxDecoration(
+                    color: !selectWifi.isChoose ? Colors.black12 : Color.fromRGBO(45,140,240,1),
+                    borderRadius: BorderRadius.circular(15)
                   ),
+                  child: Center(
+                    child: Text("下一步",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18 ,
+                          color: !selectWifi.isChoose ? Colors.black : Colors.white
+                      ),
+                    ),
+                  )
                 ),
               )
             ],
