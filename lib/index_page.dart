@@ -1,4 +1,6 @@
+import 'package:esp32_ctr/pages/mine_page.dart';
 import 'package:esp32_ctr/pages/scan_page.dart';
+import 'package:esp32_ctr/utils/SocketConnect.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -18,14 +20,21 @@ class _IndexPageState extends State<IndexPage> {
   List<Widget> pages = <Widget>[];
    static Color appBarColor = Colors.black;
    List<Color> appBarBgColors = <Color>[Color.fromRGBO(47, 185, 202, 0.3), Color.fromRGBO(255,255,255,0.1)];
+   List<Widget> appbarTitile = <Widget>[Text("欢迎回来, ofg",
+     style: TextStyle(
+       color: Color(0xFF303E57),
+     ),
+   ), Text("")];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    //开启socket
+    SocketConnect.connects(context);
     pages
       ..add(HomePage())
-      ..add(ConfigPage());
+      ..add(MinePage());
   }
 
   @override
@@ -34,16 +43,13 @@ class _IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         backgroundColor: appBarBgColors[_currentIndex],
         elevation: 0,
-        title: Text("欢迎回来, ofg",
-          style: TextStyle(
-            color: Color(0xFF303E57),
-          ),
-        ),
-        actions: [IconButton(onPressed: () =>{
+        title: appbarTitile[_currentIndex],
+        actions: [_currentIndex == 0 ? IconButton(onPressed: () =>{
           Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return ScanPage();
           }))
-        }, icon: Icon(CupertinoIcons.add_circled_solid ,size: 30,color: Color(0xFF303E57)))],
+        }, icon: Icon(CupertinoIcons.add_circled_solid ,size: 30,color: Color(0xFF303E57)))
+        : SizedBox()],
       ),
       bottomNavigationBar: SalomonBottomBar(
         margin: const EdgeInsets.all(12),

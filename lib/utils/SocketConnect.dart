@@ -7,15 +7,21 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 import '../model/Data.dart';
+enum SocketState{
+  START,
+  CLOSE
+}
+
 class SocketConnect{
 
-  static String host = "192.168.0.8";
-  static int port = 8091;
+  static String host = '192.168.1.103';
+  static String port = '8091';
   static int commandTime = 20;        // 向后台发送心跳的时间
   static late Timer timer;
   static bool socketStatus = false;  //socket状态
   static var channel;
   static var temp = 00.00, hum = 00;
+  static SocketState state = SocketState.CLOSE;
 
 
   // static getData(){
@@ -25,7 +31,7 @@ class SocketConnect{
 
   static connects(BuildContext context) async{
 
-    channel = IOWebSocketChannel.connect(Uri.parse('ws://192.168.0.9:8091/app'));
+    channel = IOWebSocketChannel.connect(Uri.parse('ws://'+host+':'+port+'/app'));
     socketStatus = true; //连接状态
     heartbeatSocket();
     // channel.sink.add(json.encode(arguments));
@@ -35,21 +41,31 @@ class SocketConnect{
     //   // channel.sink.close(status.goingAway);
     // });
 
+    //状态为START时开始接收数据
     channel.stream.listen((event) {
-      var obj = json.decode(event);
-      temp = obj['data']['temp']+0.0;
-      hum = obj['data']['hum'];
-      Provider.of<Data>(context, listen: false).setTemperature(temp);
-      Provider.of<Data>(context, listen: false).setHumidity(hum);
-      print(temp);
-      print(hum);
+      if(state == SocketState.START){
+        var obj = json.decode(event);
+        temp = obj['data']['temp']+0.0;
+        hum = obj['data']['hum'];
+        print(temp);
+        print(hum);
+
+        // print(Provider.of<Data>(context, listen: false));
+        Provider.of<Data>(context, listen: false).setTemperature(temp);
+        Provider.of<Data>(context, listen: false).setHumidity(hum);
+      }
+
+
+
+
     }, //监听服务器消息
         onError: (error){print(error);socketStatus = false;}, //连接错误时调用
         onDone: (){}, //关闭时调用
         cancelOnError:true //设置错误时取消订阅
     );
-
   }
+
+
 
   static dataHandler(data) async {
     print('-------Socket发送来的消息-------');
@@ -108,6 +124,14 @@ class SocketConnect{
     };
 
     channel.sink.add(json.encode(data));
+  }
+
+  static start(){
+    state = SocketState.START;
+  }
+
+  static close(){
+    state = SocketState.CLOSE;
   }
 
 }

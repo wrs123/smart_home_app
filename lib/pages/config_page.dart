@@ -5,8 +5,8 @@ class ConfigPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("config"),
+    return Scaffold(
+      body: Container(child: Text("dengluPage"),),
     );
   }
 }
