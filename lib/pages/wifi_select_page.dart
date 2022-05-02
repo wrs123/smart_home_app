@@ -15,6 +15,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../model/wifiInfo.dart';
+import '../utils/api/api.dart';
 
 
 class WifiSelectPage extends StatefulWidget {
@@ -99,28 +100,15 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
 
   }
 
+  //设备配网
   void _pico_wifi_set() async{
     var formData = FormData.fromMap({
       "wifi_ssid": selectWifi.ssid,
       "wifi_password": password
     });
-    // var data = {
-    //   "wifi_ssid": selectWifi.ssid,
-    //   "wifi_password": password
-    // };
-    var dio = Dio();
-    Response response = await dio.post('http://192.168.4.1:8091/post', data: formData);
-    // await HttpTools().post("/post", data: data);
-    print(response.data.toString());
-    String data = response.data.toString();
-    if(data == "0"){
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     new CupertinoPageRoute(builder: (context) => IndexPage()),
-      //         (route) => route == null);
 
-      // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
-      //   return IndexPage();
-      // }));
+    String data = await Api().sendToPico(formData);
+    if(data == "0"){
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       return ;

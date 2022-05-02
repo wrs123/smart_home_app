@@ -1,4 +1,11 @@
 import 'package:dio/dio.dart';
+import 'dart:io';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:esp32_ctr/utils/tools.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'cookieApi.dart';
 
 class HttpTools {
   static HttpTools instance = new HttpTools();
@@ -7,77 +14,55 @@ class HttpTools {
 
   late Dio _dio;
 
-  String baseUrl = "http://192.168.4.1";
+  String baseUrl = "http://192.168.1.103:8081";
 
   CancelToken cancelToken = new CancelToken();
 
-  // static HttpTools getInstance() {
-  //   if (null == instance) instance = new HttpTools();
-  //   return instance;
-  // }
 
   /*
    * config it and create
    */
   HttpTools(){
     //BaseOptions、Options、RequestOptions 都可以配置参数，优先级别依次递增，且可以根据优先级别覆盖参数
-    _options = new BaseOptions(
+    _options = BaseOptions(
       //请求基地址,可以包含子路径
-      baseUrl: "http://192.168.4.1",
+      baseUrl: "http://192.168.1.103:8081",
+      headers: {},
       //连接服务器超时时间，单位是毫秒.
       connectTimeout: 10000,
       //响应流上前后两次接受到数据的间隔，单位为毫秒。
       receiveTimeout: 10000,
-      //Http请求头.
-      headers: {
-      },
       //请求的Content-Type，默认值是[ContentType.json]. 也可以用ContentType.parse("application/x-www-form-urlencoded")
-      contentType: 'json',
+      // contentType: 'json',
       //表示期望以那种格式(方式)接受响应数据。接受4种类型 `json`, `stream`, `plain`, `bytes`. 默认值是 `json`,
       responseType: ResponseType.json,
     );
 
     _dio = new Dio(_options);
-
+    // getInstance().then((value) => {
+    //   _dio.interceptors.add(CookieManager(_cookieJar))
+    // });
     //Cookie管理
-//    Api.cookieJar.then((data){
-//      dio.interceptors.add(CookieManager(data));
-//    });
+
+
 
     //添加拦截器
-    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options, RequestInterceptorHandler handler) async{
       print("请求之前");
       print("请求的路径:"+options.path);
 
-      // Api.cookieJar.then((data){
-      //   var xsrfToken = data.loadForRequest(Uri.parse("https://cangku.one"));
-      //   if(xsrfToken.length != 0){
-      //     options.headers['cookie'] = getCookies(xsrfToken);
-      //     for(var item in xsrfToken){
-      //       if(item.name == 'XSRF-TOKEN'){
-      //         options.headers['x-xsrf-token'] = Uri.decodeComponent(item.value);
-      //         print('当前请求的xsrf-token======'+options.headers['x-xsrf-token']);
-      //
-      //       }
-      //     }
-      //   }
-      //   print('当前请求的xsrf-token======000000000000');
-      //   return options;
-      // });
-      //continue
+      String cookies = await CookieApi().getCookies(baseUrl);
+      options.headers['cookie'] = cookies == null ? "": cookies;
+      return handler.next(options);
     }, onResponse: (Response response, ResponseInterceptorHandler handler) {
       print("响应之前");
 
-      // Api.cookieJar.then((data){
-      //   _saveCookies(response, data);
-      // });
+      CookieApi().saveCookies(response);
 
-
-      // return response; // continue
+      return handler.next(response);
     }, onError: (DioError e, ErrorInterceptorHandler handler) {
       print("错误之前");
-      // Do something with response error
-      // return e; //continue
+      print(e.toString());
     }));
 
 
@@ -108,18 +93,15 @@ class HttpTools {
   post(url, {data, options, cancelToken}) async {
     late Response response;
     try {
-      response = await _dio.post(baseUrl+url, queryParameters: data, options: options, cancelToken: cancelToken);
-      print('post success---------${response.data}');
+      data = FormData.fromMap(data);
+      response = await _dio.post(baseUrl+url, data: data, options: options, cancelToken: cancelToken);
+      print('post succ---------${response.data}');
+      return response.data['data'];
     } on DioError catch (e) {
       print('post error---------$e');
       formatError(e);
     }
 
-    if(response.data != null && response.data['status_code'] == 200){
-      return response.data['data'];
-    }else{
-      return {};
-    }
   }
 
 
@@ -177,8 +159,9 @@ class HttpTools {
   /**
    *  获取cookie
    */
-  // getCookies(List<Cookie> cookies) {
-  //   return cookies.map((cookie) => "${cookie.name}=${cookie.value}").join('; ');
-  // }
+  getCookies(List<Cookie> cookies) {
+    return cookies.map((cookie) => "${cookie.name}=${cookie.value}").join('; ');
+  }
+
 
 }

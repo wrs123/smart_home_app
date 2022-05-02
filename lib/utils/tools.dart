@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Tools{
 
@@ -21,5 +24,9 @@ class Tools{
     return result == true;
   }
 
-
+  static Future<String> getOsPath() async{
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+    return appDocPath;
+  }
 }

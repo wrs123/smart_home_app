@@ -1,4 +1,7 @@
+import 'package:esp32_ctr/utils/httpTools.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/api/api.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -74,7 +77,9 @@ class _LoginPageState extends State<LoginPage> {
             child: RaisedButton(
               padding: EdgeInsets.only(top: 10, bottom: 10),
               color: Colors.blue,
-              onPressed: (){},
+              onPressed: (){
+                Api().login({"name": "admin", "password": "123"});
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)
               ),
@@ -102,6 +107,9 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
+          ),
+          MaterialButton(onPressed:() async {await Api().test({});},
+            child: Text("test"),
           )
         ],
       )
