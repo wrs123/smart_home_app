@@ -1,0 +1,1 @@
+int LOGIN_SUCCESS_CODE = 200;

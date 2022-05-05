@@ -1,6 +1,8 @@
+import 'package:esp32_ctr/model/User.dart';
 import 'package:esp32_ctr/pages/config_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/tools.dart';
 import 'login_page.dart';
@@ -18,11 +20,30 @@ class _MinePageState extends State<MinePage> {
     return Container(
       margin: EdgeInsets.all(20),
       width: double.infinity,
-      child: unLogin(),
+      child: ChangeNotifierProvider(
+          create: (BuildContext context) {  },
+          child: Consumer<User>(
+              builder: (context, model, child){
+                User userInfo = Provider.of<User>(context, listen: true);
+                if(userInfo.isLogin){
+                  return LoggedinWidget();
+                }
+                return unLoginWidget();
+              }
+          )
+      ),
     );
   }
 
-  Widget unLogin(){
+  /**
+   * 已登录组件
+   */
+  Widget LoggedinWidget(){
+    return Container(child:
+    Text("登录成功"),);
+  }
+
+  Widget unLoginWidget(){
     return Column(
       children: [
         GestureDetector(

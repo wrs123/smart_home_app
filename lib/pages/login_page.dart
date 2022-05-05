@@ -1,6 +1,11 @@
+import 'package:esp32_ctr/model/User.dart';
 import 'package:esp32_ctr/utils/httpTools.dart';
+import 'package:esp32_ctr/utils/tools.dart';
+import 'package:esp32_ctr/values.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../model/Result.dart';
 import '../utils/api/api.dart';
 
 class LoginPage extends StatefulWidget {
@@ -78,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.only(top: 10, bottom: 10),
               color: Colors.blue,
               onPressed: (){
-                Api().login({"name": "admin", "password": "123"});
+                login(context);
               },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)
@@ -114,5 +119,24 @@ class _LoginPageState extends State<LoginPage> {
         ],
       )
     );
+  }
+
+
+  static login(BuildContext context) async{
+    Result result = await Api().login({"name": "admin", "password": "123"});
+
+    if(result.code == LOGIN_SUCCESS_CODE){
+      Map userInfo = {
+        "name": result.result["user_name"],
+        "id": result.result["id"]
+      };
+      bool saveState = await Tools.savePicoKey(result.result["user_name"]);
+      bool saveUserState = await Tools.saveUserInfoFrom(userInfo);
+      if(!saveState && !saveUserState){
+
+        return false;
+      }
+      Navigator.of(context).pop();
+    }
   }
 }

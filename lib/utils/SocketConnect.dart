@@ -19,7 +19,7 @@ class SocketConnect{
   static int commandTime = 20;        // 向后台发送心跳的时间
   static late Timer timer;
   static bool socketStatus = false;  //socket状态
-  static var channel;
+  static late IOWebSocketChannel channel;
   static var temp = 00.00, hum = 00;
   static SocketState state = SocketState.CLOSE;
 
@@ -33,7 +33,8 @@ class SocketConnect{
 
     channel = IOWebSocketChannel.connect(Uri.parse('ws://'+host+':'+port+'/app'));
     socketStatus = true; //连接状态
-    heartbeatSocket();
+
+    heartbeatSocket(); //定时发送心跳
     // channel.sink.add(json.encode(arguments));
     // channel.stream.listen((message) {
     //   print(message);

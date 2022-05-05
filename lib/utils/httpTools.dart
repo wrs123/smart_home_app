@@ -96,7 +96,7 @@ class HttpTools {
       data = FormData.fromMap(data);
       response = await _dio.post(baseUrl+url, data: data, options: options, cancelToken: cancelToken);
       print('post succ---------${response.data}');
-      return response.data['data'];
+      return response.data;
     } on DioError catch (e) {
       print('post error---------$e');
       formatError(e);

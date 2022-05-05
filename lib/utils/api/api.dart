@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:esp32_ctr/utils/httpTools.dart';
 
+import '../../model/Result.dart';
+
 class Api{
   final HttpTools httpUtil = new HttpTools();
 
@@ -22,15 +24,9 @@ class Api{
   /**
    * 登录
    */
-  Future<bool> login(data) async{
-
-    try{
+  Future<Result> login(data) async{
       var rep = await httpUtil.post("/user/login", data: data);
-      return true;
-    }catch(exception){
-      return false;
-    }
-
+      return Result.fromJson(rep);
   }
 
   Future<bool> test(data) async{
