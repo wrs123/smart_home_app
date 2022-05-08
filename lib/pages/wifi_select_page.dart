@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:esp32_ctr/assets/icons/remicicon.dart';
 import 'package:esp32_ctr/index_page.dart';
+import 'package:esp32_ctr/model/User.dart';
 import 'package:esp32_ctr/pages/home_page.dart';
 import 'package:esp32_ctr/utils/httpTools.dart';
 import 'package:esp32_ctr/utils/tools.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_wifi_connect/flutter_wifi_connect.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 import 'package:wifi_scan/wifi_scan.dart';
 
 import '../model/wifiInfo.dart';
@@ -101,10 +103,11 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
   }
 
   //设备配网
-  void _pico_wifi_set() async{
+  void _pico_wifi_set(BuildContext context) async{
     var formData = FormData.fromMap({
       "wifi_ssid": selectWifi.ssid,
-      "wifi_password": password
+      "wifi_password": password,
+      "key": Provider.of<User>(context, listen: false).picoKey
     });
 
     String data = await Api().sendToPico(formData);
@@ -119,30 +122,30 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
   /**
    * 设置wifi密码
    */
-  _setPassword(){
+  _setPassword(BuildContext context){
     if(selectWifi.ssid != "0"){
-      showBottomSheet();
+      showBottomSheet(context);
     }
   }
 
-  void showBottomSheet() {
+  void showBottomSheet(BuildContext mainContext) {
     //用于在底部打开弹框的效果
     showModalBottomSheet(
         isScrollControlled: true,
         builder: (BuildContext context) {
           //构建弹框中的内容
-          return _password_input_widget(context);
+          return _password_input_widget(context, mainContext);
         },
         backgroundColor: Colors.transparent,//重要
         context: context);
   }
 
-  Widget _password_input_widget(BuildContext context){
+  Widget _password_input_widget(BuildContext bottomSheet, BuildContext mainContext){
     Widget widget = SingleChildScrollView(
       child: Container(
           height: 300,
           padding:  const EdgeInsets.only(top: 20, left: 10, right: 20),
-          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom ==0 ? 0: MediaQuery.of(context).viewInsets.bottom+50),
+          margin: EdgeInsets.only(bottom: MediaQuery.of(mainContext).viewInsets.bottom ==0 ? 0: MediaQuery.of(mainContext).viewInsets.bottom+50),
           decoration: const BoxDecoration(
               color:  Colors.white,
               borderRadius:BorderRadius.all(Radius.circular(20))
@@ -180,7 +183,7 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
                 ),
               ),
               GestureDetector(
-                onTap: _pico_wifi_set,
+                onTap: (){_pico_wifi_set(mainContext);},
                 child: Container(
                     width: double.infinity,
                     height: 50,
@@ -347,7 +350,7 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
                 ) : const SizedBox(),
               ),
               GestureDetector(
-                onTap: _setPassword,
+                onTap: (){_setPassword(context);},
                 child: Container(
                   width: Tools.getScreenSize(context).width-100,
                   height: 50,

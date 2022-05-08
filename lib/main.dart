@@ -12,7 +12,7 @@ import 'index_page.dart';
 import 'model/Data.dart';
 import 'model/Led.dart';
 
-void main() async{ await RunApp();}
+void main(){RunApp();}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

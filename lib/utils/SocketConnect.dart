@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:esp32_ctr/model/User.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
@@ -14,7 +15,7 @@ enum SocketState{
 
 class SocketConnect{
 
-  static String host = '192.168.1.103';
+  static String host = '192.168.1.100';
   static String port = '8091';
   static int commandTime = 20;        // 向后台发送心跳的时间
   static late Timer timer;
@@ -30,8 +31,8 @@ class SocketConnect{
 
 
   static connects(BuildContext context) async{
-
-    channel = IOWebSocketChannel.connect(Uri.parse('ws://'+host+':'+port+'/app'));
+    String key = Provider.of<User>(context, listen: false).picoKey;
+    channel = IOWebSocketChannel.connect(Uri.parse('ws://'+host+':'+port+'/app?'+key));
     socketStatus = true; //连接状态
 
     heartbeatSocket(); //定时发送心跳

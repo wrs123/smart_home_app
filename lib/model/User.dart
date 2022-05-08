@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 
 class User extends ChangeNotifier {
-  int _id;
+  String _id;
   String _name;
   bool _isLogin;
   String _picoKey;
 
   User(this._id, this._name, this._isLogin, this._picoKey );
 
-  void setId(int id){
+  void setAll({String? id, String? name, bool? isLogin, String? picoKey}){
+    this._id = id ?? "";
+    this._name = name ?? "";
+    this._isLogin = isLogin ?? false;
+    this._picoKey = picoKey ?? "";
+    notifyListeners();
+  }
+
+  void setId(String id){
     _id = id;
     notifyListeners();
   }
@@ -20,8 +28,8 @@ class User extends ChangeNotifier {
   }
   get name => _name;
 
-  void setHumidity(bool humidity){
-    _isLogin = humidity;
+  void setIsLogin(bool isLogin){
+    _isLogin = isLogin;
     notifyListeners();
   }
   get isLogin => _isLogin;

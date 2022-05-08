@@ -20,15 +20,29 @@ class _IndexPageState extends State<IndexPage> {
   List<Widget> pages = <Widget>[];
    static Color appBarColor = Colors.black;
    List<Color> appBarBgColors = <Color>[Color.fromRGBO(47, 185, 202, 0.3), Color.fromRGBO(255,255,255,0.1)];
-   List<Widget> appbarTitile = <Widget>[Text("欢迎回来, ofg",
-     style: TextStyle(
-       color: Color(0xFF303E57),
-     ),
+   List<Widget> appbarTitile = <Widget>[Row(
+     crossAxisAlignment: CrossAxisAlignment.center,
+     children: [
+        const Center(
+          child: Text("欢迎回来, ofg",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            height: 1,
+          color: Color(0xFF303E57),
+          )),
+        ),
+       const SizedBox(width: 10,),
+       Container(
+       width: 25,
+       height: 25,
+       child: Transform.rotate(
+           angle: 0,
+           child: Icon(Icons.link_off_rounded,color: Colors.grey,size: 19,)),
+     )],
    ), Text("")];
 
   @override
-  void initState() {
-    // TODO: implement initState
+  void initState() {  // TODO: implement initState3
     super.initState();
     //开启socket
     SocketConnect.connects(context);
@@ -44,12 +58,37 @@ class _IndexPageState extends State<IndexPage> {
         backgroundColor: appBarBgColors[_currentIndex],
         elevation: 0,
         title: appbarTitile[_currentIndex],
-        actions: [_currentIndex == 0 ? IconButton(onPressed: () =>{
-          Navigator.push(context, CupertinoPageRoute(builder: (context) {
-            return ScanPage();
-          }))
-        }, icon: Icon(CupertinoIcons.add_circled_solid ,size: 30,color: Color(0xFF303E57)))
-        : SizedBox()],
+        actions: [_currentIndex == 0 ?
+        GestureDetector(
+            onTap: () =>{
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return ScanPage();
+              }))
+            },
+            child: Align(
+              child: Container(
+              width: 30,
+              height: 30,
+              margin: EdgeInsets.only(right: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+                boxShadow: [BoxShadow(color: Color.fromRGBO(0,0,0,.2),blurRadius:3.0)],
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0, 0.45],
+                  colors: [
+                    Colors.redAccent,
+                    Colors.red,
+                  ],
+                ),
+              ),
+              child: Icon(Icons.add,color: Colors.white,size: 22),
+          ),
+            )
+        )
+        : SizedBox()
+        ],
       ),
       bottomNavigationBar: SalomonBottomBar(
         margin: const EdgeInsets.all(12),

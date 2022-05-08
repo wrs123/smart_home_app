@@ -136,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
 
         return false;
       }
+      Provider.of<User>(context, listen: false).setAll(id: userInfo["id"].toString(), name: userInfo["name"], isLogin: true, picoKey: result.result["user_name"]);
       Navigator.of(context).pop();
     }
   }

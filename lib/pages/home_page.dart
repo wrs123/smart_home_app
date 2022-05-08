@@ -26,111 +26,128 @@ class _HomePageState extends State<HomePage> {
     return Container(
       // padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0, 0.75],
-            colors: [
-              Color.fromRGBO(47, 185, 202, 0.3),
-              Color(0xFFF8F9FC),
-            ],
-          ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0, 0.75],
+              colors: [
+                Color.fromRGBO(47, 185, 202, 0.3),
+                Color(0xFFF8F9FC),
+              ],
+            ),
         ),
         child: Column(
           children: [
             Container(
-              height: Tools.getScreenSize(context).width-50,
-              // constraints: BoxConstraints(maxHeight:mediaQuery.size.width-50,maxWidth: mediaQuery.size.width-50 ),
-              // alignment: Alignment.center,
-              margin: EdgeInsets.all(15),
-              // padding: const EdgeInsets.all(50),
+              width: double.infinity,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Positioned(child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(200)),
-                    ),
-                    child: Neumorphic(
-                        style: NeumorphicStyle(
-                          shape: NeumorphicShape.concave,
-                          shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
-                          boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
-                          depth: -5,
-                          lightSource: LightSource.topLeft,
-                          color: Color.fromRGBO(46,183,201,1),
-                        ),
-                        child: Container(
-                          height: Tools.getScreenSize(context).width-100,
-                          width: Tools.getScreenSize(context).width-100,
-                          // decoration: const BoxDecoration(
-                          //   borderRadius: BorderRadius.all(Radius.circular(200)),
-                          //   boxShadow: [BoxShadow(color: Color.fromRGBO(0,0,0,1),blurRadius:10.0,spreadRadius: -20.0 )],
-                          //   gradient: LinearGradient(
-                          //     begin: Alignment.topCenter,
-                          //     end: Alignment.bottomCenter,
-                          //     colors: [
-                          //       Color.fromRGBO(46,183,201,1),
-                          //       Color.fromRGBO(67,216,205,1),
-                          //     ],
-                          //   ),
-                          // ),
-                        )
-                    ),
-                  )
-                  ),
-                  Positioned(child: Neumorphic(
-                      style: NeumorphicStyle(
-                        shape: NeumorphicShape.convex,
-                        shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
-                        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
-                        depth: 25,
-                        lightSource: LightSource.topLeft,
-                        color: Colors.white,
-                      ),
-                      child: ChangeNotifierProvider(
-                        create: (BuildContext context) {  },
-                        child: Consumer<Data>(
-                          builder: (context, model, child){
-                            Data th = Provider.of<Data>(context, listen: true);
-
-                            return Container(
-                              height: Tools.getScreenSize(context).width-190,
-                              width: Tools.getScreenSize(context).width-190,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text("室内温度",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF303E57)
-                                    ),
-                                  ),
-                                  // Padding(padding: EdgeInsets.only(top: 10)),
-
-                                  Text(th.temperature.toStringAsFixed(1)+'℃',
-                                      style: TextStyle(
-                                          fontSize: 60,
-                                          color: Color(0xFF303E57)
-                                      )
-                                  ),
-                                  Text(th.humidity.toStringAsFixed(1)+'%',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Color(0xFF303E57)
-                                      )
-                                  )
-                                ],
+                  Positioned(
+                    child: Container(
+                      height: Tools.getScreenSize(context).width-50,
+                      // constraints: BoxConstraints(maxHeight:mediaQuery.size.width-50,maxWidth: mediaQuery.size.width-50 ),
+                      // alignment: Alignment.center,
+                      margin: EdgeInsets.all(15),
+                      // padding: const EdgeInsets.all(50),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Positioned(child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(200)),
+                            ),
+                            child: Neumorphic(
+                                style: NeumorphicStyle(
+                                  shape: NeumorphicShape.concave,
+                                  shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
+                                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
+                                  depth: -5,
+                                  lightSource: LightSource.topLeft,
+                                  color: Color.fromRGBO(46,183,201,1),
+                                ),
+                                child: Container(
+                                  height: Tools.getScreenSize(context).width-100,
+                                  width: Tools.getScreenSize(context).width-100,
+                                  // decoration: const BoxDecoration(
+                                  //   borderRadius: BorderRadius.all(Radius.circular(200)),
+                                  //   boxShadow: [BoxShadow(color: Color.fromRGBO(0,0,0,1),blurRadius:10.0,spreadRadius: -20.0 )],
+                                  //   gradient: LinearGradient(
+                                  //     begin: Alignment.topCenter,
+                                  //     end: Alignment.bottomCenter,
+                                  //     colors: [
+                                  //       Color.fromRGBO(46,183,201,1),
+                                  //       Color.fromRGBO(67,216,205,1),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                )
+                            ),
+                          )
+                          ),
+                          Positioned(child: Neumorphic(
+                              style: NeumorphicStyle(
+                                shape: NeumorphicShape.convex,
+                                shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
+                                boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
+                                depth: 25,
+                                lightSource: LightSource.topLeft,
+                                color: Colors.white,
                               ),
-                            );
-                          },
-                        ),
-                      )
-                  ))
+                              child: ChangeNotifierProvider(
+                                create: (BuildContext context) {  },
+                                child: Consumer<Data>(
+                                  builder: (context, model, child){
+                                    Data th = Provider.of<Data>(context, listen: true);
+
+                                    return Container(
+                                      height: Tools.getScreenSize(context).width-190,
+                                      width: Tools.getScreenSize(context).width-190,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text("室内温度",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xFF303E57)
+                                            ),
+                                          ),
+                                          // Padding(padding: EdgeInsets.only(top: 10)),
+
+                                          Text(th.temperature.toStringAsFixed(1)+'℃',
+                                              style: TextStyle(
+                                                  fontSize: 60,
+                                                  color: Color(0xFF303E57)
+                                              )
+                                          ),
+                                          Text(th.humidity.toStringAsFixed(1)+'%',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Color(0xFF303E57)
+                                              )
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          )),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Positioned(
+                  //   child: ,
+                  //   left: 20,
+                  //   top: 15,
+                  // ),
                 ],
               ),
             ),
+
             Container(
               margin: const EdgeInsets.only(top: 20),
               child: Column(
