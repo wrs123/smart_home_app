@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../model/Data.dart';
 import '../utils/SocketConnect.dart';
 import '../utils/tools.dart';
+import 'led_ctr_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Widget> deviceList =  <Widget>[];
 
 
   @override
@@ -29,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
     return Container(
       // padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -52,23 +54,23 @@ class _HomePageState extends State<HomePage> {
                       height: Tools.getScreenSize(context).width-50,
                       // constraints: BoxConstraints(maxHeight:mediaQuery.size.width-50,maxWidth: mediaQuery.size.width-50 ),
                       // alignment: Alignment.center,
-                      margin: EdgeInsets.all(15),
+                      margin: const EdgeInsets.all(15),
                       // padding: const EdgeInsets.all(50),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           Positioned(child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(200)),
+                            decoration: const BoxDecoration(
+                              borderRadius: const BorderRadius.all(const Radius.circular(200)),
                             ),
                             child: Neumorphic(
                                 style: NeumorphicStyle(
                                   shape: NeumorphicShape.concave,
-                                  shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
+                                  shadowLightColorEmboss: const Color.fromRGBO(0,0,0,.2),
                                   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
                                   depth: -5,
                                   lightSource: LightSource.topLeft,
-                                  color: Color.fromRGBO(46,183,201,1),
+                                  color: const Color.fromRGBO(46,183,201,1),
                                 ),
                                 child: Container(
                                   height: Tools.getScreenSize(context).width-100,
@@ -92,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                           Positioned(child: Neumorphic(
                               style: NeumorphicStyle(
                                 shape: NeumorphicShape.convex,
-                                shadowLightColorEmboss: Color.fromRGBO(0,0,0,.2),
+                                shadowLightColorEmboss: const Color.fromRGBO(0,0,0,.2),
                                 boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(200)),
                                 depth: 25,
                                 lightSource: LightSource.topLeft,
@@ -111,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Text("室内温度",
+                                          const Text("室内温度",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 color: Color(0xFF303E57)
@@ -120,13 +122,13 @@ class _HomePageState extends State<HomePage> {
                                           // Padding(padding: EdgeInsets.only(top: 10)),
 
                                           Text(th.temperature.toStringAsFixed(1)+'℃',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 50,
                                                   color: Color(0xFF303E57)
                                               )
                                           ),
                                           Text(th.humidity.toStringAsFixed(1)+'%',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 20,
                                                   color: Color(0xFF303E57)
                                               )
@@ -150,96 +152,28 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
             Container(
-              margin: const EdgeInsets.only(top: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Container(
-                  //   margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  //   child: Text("全部设备",
-                  //     style: TextStyle(
-                  //       fontSize: 16
-                  //     ),
-                  //   ),
-                  // ),
                   Container(
-                    margin: EdgeInsets.only(top: 10),
-                    height: Tools.getScreenSize(context).height - Tools.getScreenSize(context).width-30-50-117,
-                    child: Swiper(
-                      curve: Curves.easeOut,
-                      itemBuilder: (BuildContext context, int index) {
-                        return  Neumorphic(
-                          margin: EdgeInsets.only(top: 25, bottom: 25, left: 10, right: 10),
-                          style: NeumorphicStyle(
-                            shape: NeumorphicShape.flat,
-                            shadowLightColor: const Color.fromRGBO(47, 185, 202, 0.3),
-                            boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
-                            depth: 10,
-                            lightSource: LightSource.topLeft,
-                            color: const Color(0xFFF8F9FC),
-                          ),
-                          child: ChangeNotifierProvider(
-                            create: (BuildContext context) {  },
-                            child: Consumer<Led>(
-                              builder: (contexts, model, child){
-                                Led led = Provider.of<Led>(context, listen: true);
-
-                                return Stack(
-                                  children: [
-                                    Positioned(
-                                        bottom: 30,
-                                        left: 30,
-                                        child: NeumorphicText(
-                                          "台灯",
-                                          style: const NeumorphicStyle(
-                                            depth: 2,  //customize depth here
-                                            color: Color(0xFF303E57), //customize color here
-                                          ),
-                                          textStyle: NeumorphicTextStyle(
-                                            fontSize: 25, //customize size here
-                                            // AND others usual text style properties (fontFamily, fontWeight, ...)
-                                          ),
-                                        )),
-                                    Positioned(
-                                        top: 30,
-                                        left: 10,
-                                        child: Image.asset('assets/images/light.png'),width: 100
-                                    ),
-                                    Positioned(
-                                        bottom: 30,
-                                        right: 30,
-                                        child: GestureDetector(
-                                          onTap: () =>{
-                                            // Vibration.vibrate(duration: 110, amplitude: 1),
-                                            LedCommand.ledPower(contexts)
-                                          },
-                                          child: Container(
-                                            width: 70,
-                                            height: 70,
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(45)),
-                                              color: led.value != 0 ? Colors.redAccent : Color.fromRGBO(47, 185, 202, 1),
-                                            ),
-                                            child: Icon(CupertinoIcons.power,
-                                              size: 40,
-                                              color: Colors.white,),
-                                          ),
-                                        ))
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: 3,
-                      viewportFraction: 0.75,
-                      scale: 0.8,
+                    margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    child: const Text("全部设备",
+                      style: TextStyle(
+                        fontSize: 16
+                      ),
                     ),
+                  ),
+                  Container(
+                    height: Tools.getScreenSize(context).height - Tools.getScreenSize(context).width-30-50-117,
+                     child: GridView.count(
+                       crossAxisCount: 2,
+                       mainAxisSpacing: 12,
+                       crossAxisSpacing: 10,
+                       childAspectRatio: 1,
+                       children: deviceList,
+                     ),
                   )
                 ],
               ),
@@ -253,6 +187,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _buildGrid();
     SocketConnect.start(); //开始接收数据
   }
 
@@ -262,6 +197,91 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     SocketConnect.close();
     print("homepage销毁");
+  }
+
+  _buildGrid(){
+    //deviceList
+    Widget widget = Neumorphic(
+      margin: const EdgeInsets.only(top: 25, bottom: 25, left: 10, right: 10),
+      style: NeumorphicStyle(
+        shape: NeumorphicShape.flat,
+        // shadowLightColor: const Color.fromRGBO(47, 185, 202, 0.1),
+        boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(15)),
+        depth: 7,
+        lightSource: LightSource.topLeft,
+        color: Colors.transparent,
+      ),
+      child: ChangeNotifierProvider(
+        create: (BuildContext context) {  },
+        child: Consumer<Led>(
+          builder: (contexts, model, child){
+            Led led = Provider.of<Led>(context, listen: true);
+            return GestureDetector(
+              onTap: () {
+                // Vibration.vibrate(duration: 110, amplitude: 1),
+                LedCommand.ledPower(contexts, led.value == 0 ? 100 : 0, true);
+              },
+              onLongPress: (){
+                Vibrate.feedback(FeedbackType.heavy);
+                Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                  return LedCtrPage();
+                }));
+              },
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 350),
+                curve: Curves.easeOut,
+                color: led.value != 0
+                    ? const Color.fromRGBO(255,255,255,1)
+                    : const Color.fromRGBO(232,232,232, .4),
+                child: Stack(
+                  children: [
+                    Positioned(
+                        bottom: 20,
+                        left: 20,
+                        child: Text(
+                          "台灯",
+                          style: TextStyle(
+                            color: led.value != 0 ? const Color(0xFF303E57) : const Color.fromRGBO(100,100,100,1),
+                            fontSize: 20, //customize size here
+                            // AND others usual text style properties (fontFamily, fontWeight, ...)
+                          ),
+                        )),
+                    Positioned(
+                        top: 10,
+                        left: 20,
+                        child: Icon(
+                          Icons.lightbulb,
+                          size: 45,
+                          color: led.value != 0 ? const Color(0xFFeba811) : const Color.fromRGBO(100,100,100,1),
+                        ),
+                        // child: Image.asset('assets/images/light.png'),width: 50
+                    ),
+                    Positioned(
+                        top: 15,
+                        right: 15,
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 350),
+                          curve: Curves.easeOut,
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            boxShadow: led.value != 0
+                                ? [BoxShadow(color: Color.fromRGBO(47, 185, 202, 1), blurRadius: 5)]
+                                : [],
+                            borderRadius: const BorderRadius.all(Radius.circular(45)),
+                            color: led.value != 0 ? const Color.fromRGBO(47, 185, 202, 1) : const Color.fromRGBO(135,135,135, 1),
+                          ),
+                        )
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+    deviceList.add(widget);
   }
 }
 

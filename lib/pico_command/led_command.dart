@@ -13,18 +13,15 @@ class LedCommand {
   };
 
 
-  static ledPower(BuildContext context){
+  static ledPower(BuildContext context, int value, bool waite){
     bool state = Provider.of<Led>(context, listen: false).commandState;
-    if(!state) {
-      Vibrate.feedback(FeedbackType.medium);
+    if(!state || !waite) {
+      Vibrate.feedback(FeedbackType.medium); //震动反馈
       Provider.of<Led>(context, listen: false).setCommandState(true);
-      int led_value = Provider
-          .of<Led>(context, listen: false)
-          .value;
 
       params = {
         "command": 0,
-        "value": led_value == 0 ? 100 : 0
+        "value": value
       };
 
       SocketConnect.send(params);
