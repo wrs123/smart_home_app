@@ -4,7 +4,11 @@ import 'package:esp32_ctr/pico_command/led_command.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
+// import 'package:vibration/vibration.dart';
+
+
 
 import '../model/Data.dart';
 import '../utils/SocketConnect.dart';
@@ -109,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                                         children: [
                                           Text("室内温度",
                                             style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 15,
                                                 color: Color(0xFF303E57)
                                             ),
                                           ),
@@ -117,7 +121,7 @@ class _HomePageState extends State<HomePage> {
 
                                           Text(th.temperature.toStringAsFixed(1)+'℃',
                                               style: TextStyle(
-                                                  fontSize: 60,
+                                                  fontSize: 50,
                                                   color: Color(0xFF303E57)
                                               )
                                           ),
@@ -134,7 +138,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               )
                           )),
-
                         ],
                       ),
                     ),
@@ -210,6 +213,7 @@ class _HomePageState extends State<HomePage> {
                                         right: 30,
                                         child: GestureDetector(
                                           onTap: () =>{
+                                            // Vibration.vibrate(duration: 110, amplitude: 1),
                                             LedCommand.ledPower(contexts)
                                           },
                                           child: Container(
@@ -218,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                                             padding: EdgeInsets.all(10),
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.all(Radius.circular(45)),
-                                              color: led.power ? Colors.redAccent : Color.fromRGBO(47, 185, 202, 1),
+                                              color: led.value != 0 ? Colors.redAccent : Color.fromRGBO(47, 185, 202, 1),
                                             ),
                                             child: Icon(CupertinoIcons.power,
                                               size: 40,
