@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class Data extends ChangeNotifier {
   double _temperature;
   int _humidity;
-  Data(this._temperature, this._humidity);
+  bool _connectStatus;
+  Data(this._temperature, this._humidity, this._connectStatus);
 
   void setTemperature(double temperature){
     _temperature = temperature;
@@ -16,4 +17,10 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
   get humidity => _humidity;
+
+  void setConnectStatus(bool connectStatus){
+    _connectStatus = connectStatus;
+    notifyListeners();
+  }
+  get connectStatus => _connectStatus;
 }

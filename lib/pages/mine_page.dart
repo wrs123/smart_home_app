@@ -26,7 +26,7 @@ class _MinePageState extends State<MinePage> {
               builder: (context, model, child){
                 User userInfo = Provider.of<User>(context, listen: true);
                 if(userInfo.isLogin){
-                  return LoggedinWidget();
+                  return LoggedinWidget(userInfo);
                 }
                 return unLoginWidget();
               }
@@ -38,9 +38,45 @@ class _MinePageState extends State<MinePage> {
   /**
    * 已登录组件
    */
-  Widget LoggedinWidget(){
-    return Container(child:
-    Text("登录成功"),);
+  Widget LoggedinWidget(User user){
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            child: Row(
+              children: [
+                Container(
+                  child: Text("欢迎回来，"+user.name,
+                    style: TextStyle(
+                      fontSize: 24
+                    ),
+                  ),
+
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.7), blurRadius: 5)]
+            ),
+            child: Center(
+              child: Text("退出登录",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget unLoginWidget(){
@@ -59,9 +95,9 @@ class _MinePageState extends State<MinePage> {
                   color: Colors.purple.withOpacity(.8),
                   borderRadius: BorderRadius.all(Radius.circular(50)),
                 boxShadow: [BoxShadow(
-                  color: Colors.black.withOpacity(.3),		// 阴影的颜色
-                  // offset: Offset(1, 2),						// 阴影与容器的距离
-                  blurRadius: 1.0,							// 高斯的标准偏差与盒子的形状卷积。
+                  color: Colors.black.withOpacity(.3),
+                  // offset: Offset(1, 2),
+                  blurRadius: 1.0,
                   ),]
               ),
               child:  Text("点击登录",

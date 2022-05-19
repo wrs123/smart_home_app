@@ -18,7 +18,7 @@ RunApp() async{
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (_) => Data(00.00, 00)),
+      ChangeNotifierProvider(create: (_) => Data(00.00, 00, false)),
       ChangeNotifierProvider(create: (_) => User(userInform["id"], userInform["userName"], isLogin, picoKey)),
       ChangeNotifierProvider(create: (_) => Led(0, false)),
     ],

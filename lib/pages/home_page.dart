@@ -216,67 +216,83 @@ class _HomePageState extends State<HomePage> {
         child: Consumer<Led>(
           builder: (contexts, model, child){
             Led led = Provider.of<Led>(context, listen: true);
-            return GestureDetector(
-              onTap: () {
-                // Vibration.vibrate(duration: 110, amplitude: 1),
-                LedCommand.ledPower(contexts, led.value == 0 ? 100 : 0, true);
-              },
-              onLongPress: (){
-                Vibrate.feedback(FeedbackType.heavy);
-                Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                  return LedCtrPage();
-                }));
-              },
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 350),
-                curve: Curves.easeOut,
-                color: led.value != 0
-                    ? const Color.fromRGBO(255,255,255,1)
-                    : const Color.fromRGBO(232,232,232, .4),
-                child: Stack(
-                  children: [
-                    Positioned(
-                        bottom: 20,
-                        left: 20,
-                        child: Text(
-                          "台灯",
-                          style: TextStyle(
-                            color: led.value != 0 ? const Color(0xFF303E57) : const Color.fromRGBO(100,100,100,1),
-                            fontSize: 20, //customize size here
-                            // AND others usual text style properties (fontFamily, fontWeight, ...)
+
+            return ChangeNotifierProvider(
+              create: (BuildContext context) {  },
+              child: Consumer<Data>(
+                builder: (contexts, model, child){
+                  bool connectStatus = Provider.of<Data>(context, listen: true).connectStatus;
+
+                  return GestureDetector(
+                    onTap: () {
+                      if(connectStatus){
+                        // Vibration.vibrate(duration: 110, amplitude: 1),
+                        LedCommand.ledPower(contexts, led.value == 0 ? 100 : 0, true);
+                      }
+                    },
+                    onLongPress: (){
+                      if(connectStatus){
+                        Vibrate.feedback(FeedbackType.heavy);
+                        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                          return LedCtrPage();
+                        }));
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      color: led.value != 0
+                          ? const Color.fromRGBO(255,255,255,1)
+                          : const Color.fromRGBO(232,232,232, .4),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                              bottom: 20,
+                              left: 20,
+                              child: Text(
+                                "台灯",
+                                style: TextStyle(
+                                  color: led.value != 0 ? const Color(0xFF303E57) : const Color.fromRGBO(100,100,100,1),
+                                  fontSize: 20, //customize size here
+                                  // AND others usual text style properties (fontFamily, fontWeight, ...)
+                                ),
+                              )),
+                          Positioned(
+                            top: 10,
+                            left: 20,
+                            child: Icon(
+                              Icons.lightbulb,
+                              size: 45,
+                              color: led.value != 0 ? const Color(0xFFeba811) : const Color.fromRGBO(100,100,100,1),
+                            ),
+                            // child: Image.asset('assets/images/light.png'),width: 50
                           ),
-                        )),
-                    Positioned(
-                        top: 10,
-                        left: 20,
-                        child: Icon(
-                          Icons.lightbulb,
-                          size: 45,
-                          color: led.value != 0 ? const Color(0xFFeba811) : const Color.fromRGBO(100,100,100,1),
-                        ),
-                        // child: Image.asset('assets/images/light.png'),width: 50
+                          Positioned(
+                              top: 15,
+                              right: 15,
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                                width: 15,
+                                height: 15,
+                                decoration: BoxDecoration(
+                                  boxShadow: led.value != 0
+                                      ? [BoxShadow(color: Color.fromRGBO(47, 185, 202, 1), blurRadius: 5)]
+                                      : [],
+                                  borderRadius: const BorderRadius.all(Radius.circular(45)),
+                                  color: led.value != 0 ? const Color.fromRGBO(47, 185, 202, 1) : const Color.fromRGBO(135,135,135, 1),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
                     ),
-                    Positioned(
-                        top: 15,
-                        right: 15,
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 350),
-                          curve: Curves.easeOut,
-                          width: 15,
-                          height: 15,
-                          decoration: BoxDecoration(
-                            boxShadow: led.value != 0
-                                ? [BoxShadow(color: Color.fromRGBO(47, 185, 202, 1), blurRadius: 5)]
-                                : [],
-                            borderRadius: const BorderRadius.all(Radius.circular(45)),
-                            color: led.value != 0 ? const Color.fromRGBO(47, 185, 202, 1) : const Color.fromRGBO(135,135,135, 1),
-                          ),
-                        )
-                    )
-                  ],
-                ),
+                  );
+                },
               ),
             );
+
+
           },
         ),
       ),

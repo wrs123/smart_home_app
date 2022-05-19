@@ -26,6 +26,8 @@ class SocketConnect{
   static SocketState state = SocketState.CLOSE;
   static int id = 1;
   static int command_id = 0;
+  static bool re_connect = false;
+  static Duration re_connect_duration = Duration(seconds: 1);
 
 
   // static getData(){
@@ -33,10 +35,13 @@ class SocketConnect{
   // }
 
 
-  static connects(BuildContext context) async{
+  static connects(BuildContext context,{required bool reConnect, required Duration duration}) async{
+    re_connect = reConnect;
+    re_connect_duration = duration;
     String key = Provider.of<User>(context, listen: false).picoKey;
+    Data data = Provider.of<Data>(context, listen: false);
     channel = IOWebSocketChannel.connect(Uri.parse('ws://'+host+':'+port+'/app?'+key));
-    socketStatus = true; //连接状态
+    data.setConnectStatus(true);  socketStatus = true;//连接状态
 
     _heartbeatSocket(); //定时发送心跳
     // channel.sink.add(json.encode(arguments));
@@ -60,8 +65,8 @@ class SocketConnect{
             // print(hum);
 
             // print(Provider.of<Data>(context, listen: false));
-            Provider.of<Data>(context, listen: false).setTemperature(temp);
-            Provider.of<Data>(context, listen: false).setHumidity(hum);
+            data.setTemperature(temp); //存储温度
+            data.setHumidity(hum); //存储湿度
           }
           break;
 
@@ -91,8 +96,17 @@ class SocketConnect{
 
 
     }, //监听服务器消息
-        onError: (error){print(error);socketStatus = false;}, //连接错误时调用
-        onDone: (){}, //关闭时调用
+        onError: (error){
+          print(error);
+          socketStatus = false;
+          data.setConnectStatus(false);
+          _reConnect(context);
+        }, //连接错误时调用
+        onDone: (){
+          socketStatus = false;
+          data.setConnectStatus(false);
+          _reConnect(context);
+        }, //关闭时调用
         cancelOnError:true //设置错误时取消订阅
     );
   }
@@ -154,6 +168,19 @@ class SocketConnect{
 
   static close(){
     state = SocketState.CLOSE;
+  }
+
+  static _reConnect(BuildContext context){
+    print("重连");
+    Timer timer = Timer.periodic(re_connect_duration, (timer) {
+      if (socketStatus) {
+        timer.cancel();
+      }else{
+          connects(context, reConnect: true, duration: re_connect_duration);
+          print("3秒后执行定时器======${DateTime.now()}${socketStatus}");
+      }
+
+    });
   }
 
 }
