@@ -60,7 +60,7 @@ class _MinePageState extends State<MinePage> {
             margin: EdgeInsets.only(top: 20),
             width: double.infinity,
             height: 50,
-            decoration: BoxDecoration(
+            decoration: BoxDecoration( 
               color: Colors.redAccent,
               borderRadius: BorderRadius.all(Radius.circular(10)),
               boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.7), blurRadius: 5)]
