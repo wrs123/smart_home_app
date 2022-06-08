@@ -1,9 +1,12 @@
+import 'package:esp32_ctr/model/Result.dart';
 import 'package:esp32_ctr/model/User.dart';
 import 'package:esp32_ctr/pages/config_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/api/api.dart';
 import '../utils/tools.dart';
 import 'login_page.dart';
 
@@ -56,20 +59,23 @@ class _MinePageState extends State<MinePage> {
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 20),
-            width: double.infinity,
-            height: 50,
-            decoration: BoxDecoration( 
-              color: Colors.redAccent,
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.7), blurRadius: 5)]
-            ),
-            child: Center(
-              child: Text("退出登录",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16
+          GestureDetector(
+            onTap: () {_logout();},
+            child: Container(
+              margin: EdgeInsets.only(top: 20),
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.7), blurRadius: 5)]
+              ),
+              child: Center(
+                child: Text("退出登录",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16
+                  ),
                 ),
               ),
             ),
@@ -77,6 +83,37 @@ class _MinePageState extends State<MinePage> {
         ],
       ),
     );
+  }
+
+  Widget toastTemplate(String text){
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        color: Colors.black87,
+      ),
+      padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
+      child: Text(text,
+        style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.w400
+        ),
+      ),
+    );
+  }
+
+  _logout() async{
+    Result rep = await Api().logout();
+    bool saveState = await Tools.removePicoKey();
+    if(rep.code == 200){
+      showToastWidget(toastTemplate(rep.message),
+          duration: Duration(milliseconds: 700),
+          position: ToastPosition(align: Alignment.topCenter, offset: 50)
+      );
+      Future.delayed(Duration(milliseconds: 700), () {
+        Provider.of<User>(context, listen: false).setIsLogin(false);
+      });
+    }
   }
 
   Widget unLoginWidget(){

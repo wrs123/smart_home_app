@@ -59,6 +59,12 @@ class Tools{
     return result;
   }
 
+  static Future<bool> removePicoKey() async{
+    bool result = await saveData({"picoKey": ""});
+
+    return result;
+  }
+
   static Future<bool> saveUserInfoFrom(Map data) async{
     final prefs = await SharedPreferences.getInstance();
     bool result = true;

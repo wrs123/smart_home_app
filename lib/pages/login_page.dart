@@ -1,8 +1,11 @@
 import 'package:esp32_ctr/model/User.dart';
+import 'package:esp32_ctr/pages/register_page.dart';
 import 'package:esp32_ctr/utils/httpTools.dart';
 import 'package:esp32_ctr/utils/tools.dart';
 import 'package:esp32_ctr/values.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../model/Result.dart';
@@ -16,6 +19,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  static String username = "admin";
+  static String password = "123";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(25, 40, 25,10),
+            margin: EdgeInsets.fromLTRB(25, 40, 25, 10),
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -60,6 +66,11 @@ class _LoginPageState extends State<LoginPage> {
                         contentPadding: EdgeInsets.all(12.0),
                         border: InputBorder.none
                     ),
+                    onChanged: (change){
+                      setState(() {
+                        username = change;
+                      });
+                    },
                   ),
                 ),
                 Divider(height: 1, thickness: 1, color: Colors.black12),
@@ -71,6 +82,11 @@ class _LoginPageState extends State<LoginPage> {
                       contentPadding: EdgeInsets.all(12.0),
                       border: InputBorder.none
                   ),
+                  onChanged: (change){
+                    setState(() {
+                      password = change;
+                    });
+                  },
                 )
               ],
             ),
@@ -83,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: EdgeInsets.only(top: 10, bottom: 10),
               color: Colors.blue,
               onPressed: (){
-                login(context);
+                _login(context);
               },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)
@@ -91,39 +107,62 @@ class _LoginPageState extends State<LoginPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    width: 17,
-                    height: 17,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      backgroundColor: Colors.blue,
-                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                  // SizedBox(
+                  //   width: 17,
+                  //   height: 17,
+                  //   child: CircularProgressIndicator(
+                  //     strokeWidth: 2.5,
+                  //     backgroundColor: Colors.blue,
+                  //     valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+                  //   ),
+                  // ),
+                  Text('登录',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 15),
-                    child: Text('登录中',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
           ),
-          MaterialButton(onPressed:() async {await Api().test({});},
-            child: Text("test"),
+          GestureDetector(
+            onTap: (){_register(context);},
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text("没有账号？点击注册"),
+            ),
           )
         ],
       )
     );
   }
 
+  static _register(BuildContext context) async{
+    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
+      return RegisterPage();
+    }));
+  }
 
-  static login(BuildContext context) async{
-    Result result = await Api().login({"name": "admin", "password": "123"});
+  Widget toastTemplate(String text){
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        color: Colors.black87,
+      ),
+      padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
+      child: Text(text,
+        style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            fontWeight: FontWeight.w400
+        ),
+      ),
+    );
+  }
+
+  _login(BuildContext context) async{
+    Result result = await Api().login({"name": username, "password": password});
 
     if(result.code == LOGIN_SUCCESS_CODE){
       Map userInfo = {
@@ -138,6 +177,11 @@ class _LoginPageState extends State<LoginPage> {
       }
       Provider.of<User>(context, listen: false).setAll(id: userInfo["id"].toString(), name: userInfo["name"], isLogin: true, picoKey: result.result["user_name"]);
       Navigator.of(context).pop();
+      return ;
     }
+    showToastWidget(toastTemplate(result.message),
+        duration: Duration(milliseconds: 800),
+        position: ToastPosition(align: Alignment.topCenter, offset: 50)
+    );
   }
 }

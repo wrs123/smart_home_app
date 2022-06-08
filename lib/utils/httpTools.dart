@@ -14,7 +14,7 @@ class HttpTools {
 
   late Dio _dio;
 
-  String baseUrl = "http://192.168.1.103:8081";
+  String baseUrl = "http://192.168.0.9:8081";
 
   CancelToken cancelToken = new CancelToken();
 
@@ -26,7 +26,7 @@ class HttpTools {
     //BaseOptions、Options、RequestOptions 都可以配置参数，优先级别依次递增，且可以根据优先级别覆盖参数
     _options = BaseOptions(
       //请求基地址,可以包含子路径
-      baseUrl: "http://192.168.1.103:8081",
+      baseUrl: baseUrl,
       headers: {},
       //连接服务器超时时间，单位是毫秒.
       connectTimeout: 10000,
@@ -95,7 +95,8 @@ class HttpTools {
     try {
       data = FormData.fromMap(data);
       response = await _dio.post(baseUrl+url, data: data, options: options, cancelToken: cancelToken);
-      print('post succ---------${response.data}');
+
+      print('post success---------${response.data}');
       return response.data;
     } on DioError catch (e) {
       print('post error---------$e');

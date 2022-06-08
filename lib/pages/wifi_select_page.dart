@@ -40,7 +40,7 @@ class _WifiSelectPageState extends State<WifiSelectPage> {
   List<WIfiInfo>? wifiList = [];
   late WIfiInfo selectWifi = new WIfiInfo("0", 0, false);
   ApConnectStatus ap_connect_status = ApConnectStatus.connecting;
-  String password = "WR-';223sgjm4sd445n/....?=_-096.~6---";
+  String password = "breezyrabbit304";//"WR-';223sgjm4sd445n/....?=_-096.~6---";
 
 
   @override

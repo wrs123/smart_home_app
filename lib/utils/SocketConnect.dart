@@ -16,7 +16,7 @@ enum SocketState{
 
 class SocketConnect{
 
-  static String host = '192.168.1.103';
+  static String host = '192.168.0.5';
   static String port = '8091';
   static int commandTime = 20;        // 向后台发送心跳的时间
   static late Timer timer;
